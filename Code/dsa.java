@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 class dsa
 {
-	static String inputFile = "input.txt";
+	static String inputFile = "input.csv";
 	static String outputFile = "output.txt";
 	public static void main(String[] args) throws FileNotFoundException
 	{
