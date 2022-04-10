@@ -9,7 +9,7 @@
 
 ## Title
 
-College Database Management System
+Sports Database Management System
 
 ## Group Name
 
@@ -17,7 +17,7 @@ College Database Management System
 
 ## Problem Statement
 
-To implement a College Database Management System, using as many concepts from Data Structures and Algorithms as possible.
+To implement a Sports Database Management System, using as many concepts from Data Structures and Algorithms as possible.
 
 ## Ideas
 
@@ -26,8 +26,9 @@ To implement a College Database Management System, using as many concepts from D
    - Each record contains data in individual properties (not the entire line)
 2. Implement Queued DLL using 2 Stacks
 3. Sort the data, using (Some) Sort
-4. Look for an inputted element, using Binary Search
+4. Search for an inputted element, using Binary Search
 5. Classify using trees
+5. Search for an element within a certain category (to improve speed)
 
 ## Language Used
 
