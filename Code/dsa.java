@@ -25,17 +25,21 @@ class Record { // STORE RECORDS
 		// print();
 	}
 
-	public static int hash(String name)
-	{
+	public static int hash(String name) {
+		// polynomial hashing
 		int sum = 0;
-		name = name.toLowerCase(); // to ensure case-insensitivity
-		for (int i = 0; i < name.length(); i++)
-		{
-			sum += name.charAt(i);
+
+		name = name.replaceAll("\\s", ""); // remove spaces
+		name = name.toLowerCase(); // ensure case-insensitivity
+		
+		int a = 10;
+		for (int i = 0; i < name.length(); i++) {
+			sum += Math.pow(a, i) * name.charAt(i); // a^n * char
 		}
+		
 		return sum;
 	}
-	
+
 	void print() {
 		System.out.println(
 				"\nid: " + id + "\nname: " + name + "\nage: " + age + "\nrole: " + role + "\nposition: " + position);
@@ -66,8 +70,8 @@ class Record { // STORE RECORDS
 
 class Queue {
 
-	int size = 0;
-	int last = 0;
+	static int size;
+	static int last = 0;
 
 	class Stack // SUBCLASS STACK FOR CREATING STACK OBJECTS
 	{
@@ -104,7 +108,7 @@ class Queue {
 
 				t = t + 1;
 				stack[t] = a;
-				System.out.println("VALUE INSERTED");
+				// System.out.println("VALUE INSERTED");
 			}
 
 		}
@@ -158,18 +162,9 @@ class Queue {
 
 	void enqueue(Record rec) {
 		s1.push(rec); // CREATING ENQUEUE STACK
-
-		if (s1.isFull()) {
-			Stack s3 = new Stack(); // DUMMY STACK FOR POPPING VALUES FROM ENQUEUE AND INSERTING INTO DEQUEUE STACK
-
-			copy(s1, s3);
-			System.out.println("FULL");
-
-			while (!s3.isEmpty()) { // CREATING DEQUEUE STACK
-				Record r1 = s3.pop();
-				s2.push(r1);
-			}
-
+		while (!s1.isEmpty()) {
+			Record r = s1.pop();
+			s2.push(r);
 		}
 
 	}
@@ -207,14 +202,15 @@ class dsa {
 			 * q.s2.display();
 			 */
 
-			System.out.print("1: Binarysearch\n" +
-							"2: Radix Sort :\n" + 
+			System.out.println(
+					"1: Binarysearch\n" +
+							"2: Radix Sort\n" +
 							"Choice: ");
 			int n = s.nextInt();
 
 			switch (n) {
 				case 1: {
-					System.out.println("BINARYSEARCH\n");
+					System.out.println("Binary Search\n");
 					Record[] s_stack = q.getEnQ();
 
 					int len = q.getSize();
@@ -223,7 +219,7 @@ class dsa {
 				}
 
 				case 2: {
-					System.out.println("RADIX SORT\n");
+					System.out.println("Radix Sort\n");
 					Record[] s_stack = q.getEnQ();
 
 					int len = q.getSize();
@@ -240,7 +236,6 @@ class dsa {
 				}
 
 			}
-			;
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -261,6 +256,7 @@ class dsa {
 		int mid;
 
 		while (l <= r) {
+
 			mid = (r + l) / 2;
 
 			if (list[mid].getID() == id_no) {
