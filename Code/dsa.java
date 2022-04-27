@@ -1,8 +1,27 @@
 package Code; // this file is in a subfolder of the git repo
 
-import java.util.*;
-// import java.lang.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+
+class Hash {
+	public static int hash(String name) {
+		// polynomial hashing
+		int sum = 0;
+
+		name = name.replaceAll("\\s", ""); // remove spaces
+		name = name.toLowerCase(); // ensure case-insensitivity
+
+		int a = 10;
+		for (int i = 0; i < name.length(); i++) {
+			sum += Math.pow(a, i) * name.charAt(i); // a^n * char
+		}
+
+		return sum;
+	}
+
+}
 
 class Record { // STORE RECORDS
 	int id;
@@ -11,39 +30,56 @@ class Record { // STORE RECORDS
 	String role;
 	String position;
 
-	public Record() {
-		String x = "empty";
+	public static String toTitleCase(String text) {
+		if (text == null || text.isEmpty()) {
+			return text;
+		}
+
+		StringBuilder converted = new StringBuilder();
+
+		boolean convertNext = true;
+		for (char ch : text.toCharArray()) {
+			if (Character.isSpaceChar(ch)) {
+				convertNext = true;
+			} else if (convertNext) {
+				ch = Character.toTitleCase(ch);
+				convertNext = false;
+			} else {
+				ch = Character.toLowerCase(ch);
+			}
+			converted.append(ch);
+		}
+
+		return converted.toString();
 	}
 
 	public Record(String rec) {
 		StringTokenizer st = new StringTokenizer(rec, ",");
-		this.name = st.nextToken();
-		this.id = hash(this.name);
-		this.age = Integer.parseInt(st.nextToken());
-		this.role = st.nextToken();
-		this.position = st.nextToken();
-		// print();
+
+		name = st.nextToken();
+		name = toTitleCase(name);
+
+		id = Hash.hash(name);
+		age = Integer.parseInt(st.nextToken());
+		
+		role = st.nextToken();
+		role = toTitleCase(role);
+		
+		position = st.nextToken();
+		position = toTitleCase(position);
 	}
 
-	public static int hash(String name) {
-		// polynomial hashing
-		int sum = 0;
-
-		name = name.replaceAll("\\s", ""); // remove spaces
-		name = name.toLowerCase(); // ensure case-insensitivity
-		
-		int a = 10;
-		for (int i = 0; i < name.length(); i++) {
-			sum += Math.pow(a, i) * name.charAt(i); // a^n * char
-		}
-		
-		return sum;
+	public Record() {
 	}
 
-	void print() {
+	void print() { // PRINT RECORD DETAILS
 		System.out.println(
-				"\nid: " + id + "\nname: " + name + "\nage: " + age + "\nrole: " + role + "\nposition: " + position);
-
+			"Id: " + id + "\n" +
+			"Name: " + name + "\n" +
+			"Age: " + age + "\n" +
+			"Role: " + role + "\n" +
+			"Position: " + position
+		);
 	}
 
 	int getID() {
@@ -70,19 +106,21 @@ class Record { // STORE RECORDS
 
 class Queue {
 
-	static int size;
-	static int last = 0;
+	// int size=0;
+	int last = 0;
+	int capacity = 1000; // TOTAL CAPACITY OF STACK
+	static Stack s1; // ENQ STACK
+	static Stack s2; // DEQ STACK
 
 	class Stack // SUBCLASS STACK FOR CREATING STACK OBJECTS
 	{
 		int t = -1;
+
 		Record[] stack;
-		// int size=0;
+		// int size=t+1;
 
-		public Stack() {
-
-			stack = new Record[size];
-			last = size;
+		public Stack() { // INITIALISES STACK WITH MENTIONED DEFAULT CAPACITY
+			stack = new Record[capacity];
 		}
 
 		boolean isEmpty() {
@@ -92,33 +130,34 @@ class Queue {
 		}
 
 		boolean isFull() {
-			if (t == size - 1) {
-
+			if (getSize() == capacity) {
 				return true;
-
 			}
 			return false;
 		}
 
 		void push(Record a) {
 
-			if (t == size - 1)
+			if (isFull())
 				System.out.println("stack full");
 			else {
 
 				t = t + 1;
+				// size++;
 				stack[t] = a;
 				// System.out.println("VALUE INSERTED");
 			}
 
 		}
 
-		Record pop() {
+		Record pop() { // POP FROM STACK
 			Record s = new Record();
+
 			if (!isEmpty()) {
 				s = stack[t];
 				stack[t] = null;
 				t = t - 1;
+				// size--;
 
 				// System.out.println(s+" removed from STACK");
 			}
@@ -128,7 +167,7 @@ class Queue {
 
 		void display() { // DISPLAYS RECORDS PRESENT IN STACK
 			if (!isEmpty()) {
-				for (int i = 0; i < size; i++) {
+				for (int i = 0; i < getSize(); i++) {
 					if (stack[i] != null)
 						stack[i].print();
 
@@ -139,160 +178,106 @@ class Queue {
 
 		Record[] getStack() {
 			return stack;
-		}
+		} // RETURNS THE STACK ARRAY
 
+		int getSize() {
+			return t + 1;
+		} // SIZE OF THE STACK(GETS UPDATED)
 	}
 
-	Stack s1;
-	Stack s2;
+	public Queue() { // INITIALIZES 2 STACKS- ONE FOR ENQUEUE AND ONE FOR DEQUEUE
 
-	void copy(Stack stack1, Stack stack2) {
-
-		for (int i = 0; i < size; i++) {
-			stack2.push(stack1.stack[i]);
-		}
-		// stack2.display();
-	}
-
-	public Queue(int n) { // INITIALIZES 2 STACKS- ONE FOR ENQUEUE AND ONE FOR DEQUEUE
-		size = n;
 		s1 = new Stack();
 		s2 = new Stack();
 	}
 
 	void enqueue(Record rec) {
 		s1.push(rec); // CREATING ENQUEUE STACK
-		while (!s1.isEmpty()) {
-			Record r = s1.pop();
-			s2.push(r);
+		// System.out.println(s1.getSize());
+
+	}
+
+	void dequeue() {
+		while (!s1.isEmpty()) { // CREATING DEQUEUE STACK
+			Record r1 = s1.pop();
+			// r1.print();
+			s2.push(r1);
 		}
 
+		// s2.display();
 	}
 
-	Record[] getEnQ() {
-		return s1.getStack();
-	}
-
-	int getSize() {
-		return size;
-	}
-}
-
-class dsa {
-	static Scanner s = new Scanner(System.in);
-
-	public static void main(String[] args) {
-		try {
-			File f = new File("data.csv");
-			Scanner sc = new Scanner(f, "utf-8");
-
-			Queue q = new Queue(5); // 1st stack
-
-			while (sc.hasNextLine()) {
-
-				String line = sc.nextLine();
-				Record recn = new Record(line);
-				q.enqueue(recn);
-			}
-			sc.close();
-			/*
-			 * System.out.println("enqueue stack");
-			 * q.s1.display();
-			 * System.out.println("\n\ndequeue stack");
-			 * q.s2.display();
-			 */
-
-			System.out.println(
-					"1: Binarysearch\n" +
-							"2: Radix Sort\n" +
-							"Choice: ");
-			int n = s.nextInt();
-
-			switch (n) {
-				case 1: {
-					System.out.println("Binary Search\n");
-					Record[] s_stack = q.getEnQ();
-
-					int len = q.getSize();
-					BinSearch(s_stack, len);
-					break;
-				}
-
-				case 2: {
-					System.out.println("Radix Sort\n");
-					Record[] s_stack = q.getEnQ();
-
-					int len = q.getSize();
-					radixSort(s_stack, len);
-					for (Record re : s_stack) {
-						re.print();
-						System.out.println();
-					}
-					break;
-				}
-
-				default: {
-					break;
-				}
-
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	Stack getQ() { // DEQUEUES THE ENQ STACK, S1, INTO S2 AND RETURNS S2
+		dequeue();
+		// s2.display();
+		return s2;
 
 	}
 
-	static void BinSearch(Record[] list, int len) {
+	void binSearch(String name) { // SEARCHES BASED ON ID
+		radixSort();
 
-		System.out.print("enter name to search: ");
-		String name = s.next();
-		int id_no = Record.hash(name);
-		Record rex = new Record();
+		int id_no = Hash.hash(name);
 
-		int flag = 0;
+		Stack stck = getQ(); // FETCHES DEQUEUE STACK OBJECT
+		// stck.display();
+		Record[] records = stck.getStack(); // FETCHES STACK ARRAY FOR SEARCHING
+
+		int r = stck.getSize() - 1;
 		int l = 0;
-		int r = len - 1;
-		int mid;
+		int p = 0;
+
+		Record rex = new Record(); // EMPTY RECORD FOR ASSIGNING FOUND RECORD
 
 		while (l <= r) {
+			int mid = (l + r) / 2;
 
-			mid = (r + l) / 2;
+			int id_mid = records[mid].getID();
 
-			if (list[mid].getID() == id_no) {
-				rex = list[mid];
-				flag = 1;
+			if (id_mid == id_no) {
+				rex = records[mid];
+				p = 1;
 				break;
 			}
 
-			else if (list[mid].getID() > id_no) {
-				r = mid - 1;
+			else if (id_mid < id_no) { // this was >
+				l = mid + 1;
 			}
 
 			else {
-				l = mid + 1;
+				r = mid - 1;
 			}
+
 		}
 
-		if (flag == 1) {
-			System.out.println("record found");
+		if (p == 1) {
+			// System.out.println("Record found");
 			rex.print();
 		} else {
-			System.out.println("Record not found");
+			System.out.println(name + " not found");
 		}
-
 	}
 
-	static void radixSort(Record[] r, int len) {
-		int max = getMax(r, len);
+	void radixSort() {
+		Stack stck = getQ(); // FETCHES DEQUEUE STACK OBJECT
+
+		Record[] records = stck.getStack(); // FETCHES STACK ARRAY FOR SEARCHING
+
+		int len = stck.getSize(); // FETCHES THE SIZE OF THE STACK
+		int max = getMax(records, len);
 
 		for (int e = 1; max / e > 0; e *= 10) {
-			sort(r, 0, len - 1);
+			sort(records, 0, len - 1);
 		}
 
+		// for (int i = 0; i <= len - 1; i++) {
+		// records[i].print();
+		// }
+
+		// System.out.println("Records Sorted");
 	}
 
-	static void merge(Record arr[], int l, int m, int r) {
+	void merge(Record arr[], int l, int m, int r) {
 		// Find sizes of two subarrays to be merged
 		int n1 = m - l + 1;
 		int n2 = r - m;
@@ -340,7 +325,7 @@ class dsa {
 		}
 	}
 
-	static void sort(Record arr[], int l, int r) {
+	void sort(Record arr[], int l, int r) {
 		if (l < r) {
 			// Find the middle point
 			int m = l + (r - l) / 2;
@@ -354,7 +339,7 @@ class dsa {
 		}
 	}
 
-	static int getMax(Record[] r, int len) {
+	int getMax(Record[] r, int len) {
 		int max = r[0].getID();
 
 		for (int i = 1; i < len; i++) {
@@ -365,4 +350,68 @@ class dsa {
 		return max;
 	}
 
+}
+
+public class dsa {
+	static Scanner s = new Scanner(System.in);
+	static File f = new File("data.csv");
+	static Scanner sc;
+	static Queue q = new Queue(); // 1st stack
+
+	public static void clearScreen() {
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
+	}
+
+	public static void input() throws FileNotFoundException {
+		sc = new Scanner(f, "utf-8");
+		while (sc.hasNextLine()) {
+
+			String line = sc.nextLine();
+			Record recn = new Record(line);
+			q.enqueue(recn); // INSERTS RECORDS INTO STACK S1
+		}
+
+		// System.out.println("Values Read from File!");
+		sc.close();
+	}
+
+	public static void menu() {
+		System.out.print("\n" +
+				"Menu" + "\n" +
+				"1: Search for Person" + "\n" +
+				"\n" +
+				"Choice:"); // MENU
+		int c = s.nextInt();
+
+		clearScreen();
+
+		switch (c) {
+			case 1: {
+				System.out.println("Binary Search\n");
+				System.out.print("Name to be searched (case-insensitive): ");
+
+				String name = s.next();
+
+				q.binSearch(name);
+				menu();
+				break;
+			}
+
+			default: {
+				break;
+			}
+
+		}
+		;
+	}
+
+	public static void main(String[] args) {
+		try {
+			input();
+			menu();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
