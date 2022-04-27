@@ -17,14 +17,25 @@ class Record { // STORE RECORDS
 
 	public Record(String rec) {
 		StringTokenizer st = new StringTokenizer(rec, ",");
-		this.id = Integer.parseInt(st.nextToken());
 		this.name = st.nextToken();
+		this.id = hash(this.name);
 		this.age = Integer.parseInt(st.nextToken());
 		this.role = st.nextToken();
 		this.position = st.nextToken();
 		// print();
 	}
 
+	public static int hash(String name)
+	{
+		int sum = 0;
+		name = name.toLowerCase(); // to ensure case-insensitivity
+		for (int i = 0; i < name.length(); i++)
+		{
+			sum += name.charAt(i);
+		}
+		return sum;
+	}
+	
 	void print() {
 		System.out.println(
 				"\nid: " + id + "\nname: " + name + "\nage: " + age + "\nrole: " + role + "\nposition: " + position);
@@ -172,15 +183,15 @@ class Queue {
 	}
 }
 
-class Main {
+class dsa {
 	static Scanner s = new Scanner(System.in);
 
 	public static void main(String[] args) {
 		try {
-			File f = new File("sports.txt");
+			File f = new File("data.csv");
 			Scanner sc = new Scanner(f, "utf-8");
 
-			Queue q = new Queue(4); // 1st stack
+			Queue q = new Queue(5); // 1st stack
 
 			while (sc.hasNextLine()) {
 
@@ -196,7 +207,9 @@ class Main {
 			 * q.s2.display();
 			 */
 
-			System.out.print("1-binarysearch\n2-radix sort :\nn=");
+			System.out.print("1: Binarysearch\n" +
+							"2: Radix Sort :\n" + 
+							"Choice: ");
 			int n = s.nextInt();
 
 			switch (n) {
@@ -237,20 +250,22 @@ class Main {
 
 	static void BinSearch(Record[] list, int len) {
 
-		System.out.print("enter id to search: ");
-		int id_no = s.nextInt();
+		System.out.print("enter name to search: ");
+		String name = s.next();
+		int id_no = Record.hash(name);
 		Record rex = new Record();
 
-		int p = 0;
+		int flag = 0;
 		int l = 0;
 		int r = len - 1;
+		int mid;
 
 		while (l <= r) {
-			int mid = (r + l) / 2;
+			mid = (r + l) / 2;
 
 			if (list[mid].getID() == id_no) {
 				rex = list[mid];
-				p = 1;
+				flag = 1;
 				break;
 			}
 
@@ -263,7 +278,7 @@ class Main {
 			}
 		}
 
-		if (p == 1) {
+		if (flag == 1) {
 			System.out.println("record found");
 			rex.print();
 		} else {
