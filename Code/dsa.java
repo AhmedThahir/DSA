@@ -1,16 +1,19 @@
-package Code; // this file is in a subfolder of the git repo
+package Code; // This program is in a subfolder
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+import javax.swing.*;
+import java.awt.event.*;
+import java.awt.*;
+
 class Hash {
 	public static int hash(String name) {
 		// polynomial hashing
 		int sum = 0;
 
-		name = name.replaceAll("\\s", ""); // remove spaces
 		name = name.toLowerCase(); // ensure case-insensitivity
 
 		int a = 10;
@@ -23,13 +26,7 @@ class Hash {
 
 }
 
-class Record { // STORE RECORDS
-	int id;
-	String name;
-	int age;
-	String role;
-	String position;
-
+class Case {
 	public static String toTitleCase(String text) {
 		if (text == null || text.isEmpty()) {
 			return text;
@@ -52,34 +49,42 @@ class Record { // STORE RECORDS
 
 		return converted.toString();
 	}
+}
+
+class Record { // STORE RECORDS
+	int id;
+	String name;
+	int age;
+	String role;
+	String position;
 
 	public Record(String rec) {
 		StringTokenizer st = new StringTokenizer(rec, ",");
 
 		name = st.nextToken();
-		name = toTitleCase(name);
+		name = Case.toTitleCase(name);
 
 		id = Hash.hash(name);
 		age = Integer.parseInt(st.nextToken());
+
+		position = st.nextToken();
+		position = Case.toTitleCase(position);
 		
 		role = st.nextToken();
-		role = toTitleCase(role);
-		
-		position = st.nextToken();
-		position = toTitleCase(position);
+		role = Case.toTitleCase(role);
 	}
 
 	public Record() {
 	}
 
 	void print() { // PRINT RECORD DETAILS
-		System.out.println(
-			"Id: " + id + "\n" +
-			"Name: " + name + "\n" +
-			"Age: " + age + "\n" +
-			"Role: " + role + "\n" +
-			"Position: " + position
-		);
+		JOptionPane.showMessageDialog(null,
+				"Id: " + id + "\n" +
+						"Name: " + name + "\n" +
+						"Age: " + age + "\n" +
+						"Role: " + role + "\n" +
+						"Position: " + position,
+				"Output", 3);
 	}
 
 	int getID() {
@@ -106,7 +111,6 @@ class Record { // STORE RECORDS
 
 class Queue {
 
-	// int size=0;
 	int last = 0;
 	int capacity = 1000; // TOTAL CAPACITY OF STACK
 	static Stack s1; // ENQ STACK
@@ -117,7 +121,6 @@ class Queue {
 		int t = -1;
 
 		Record[] stack;
-		// int size=t+1;
 
 		public Stack() { // INITIALISES STACK WITH MENTIONED DEFAULT CAPACITY
 			stack = new Record[capacity];
@@ -139,13 +142,11 @@ class Queue {
 		void push(Record a) {
 
 			if (isFull())
-				System.out.println("stack full");
+				JOptionPane.showMessageDialog(null, "Stack Full", "Error", 3);
 			else {
 
 				t = t + 1;
-				// size++;
 				stack[t] = a;
-				// System.out.println("VALUE INSERTED");
 			}
 
 		}
@@ -157,9 +158,6 @@ class Queue {
 				s = stack[t];
 				stack[t] = null;
 				t = t - 1;
-				// size--;
-
-				// System.out.println(s+" removed from STACK");
 			}
 
 			return s;
@@ -193,23 +191,17 @@ class Queue {
 
 	void enqueue(Record rec) {
 		s1.push(rec); // CREATING ENQUEUE STACK
-		// System.out.println(s1.getSize());
-
 	}
 
 	void dequeue() {
 		while (!s1.isEmpty()) { // CREATING DEQUEUE STACK
 			Record r1 = s1.pop();
-			// r1.print();
 			s2.push(r1);
 		}
-
-		// s2.display();
 	}
 
 	Stack getQ() { // DEQUEUES THE ENQ STACK, S1, INTO S2 AND RETURNS S2
 		dequeue();
-		// s2.display();
 		return s2;
 
 	}
@@ -220,7 +212,6 @@ class Queue {
 		int id_no = Hash.hash(name);
 
 		Stack stck = getQ(); // FETCHES DEQUEUE STACK OBJECT
-		// stck.display();
 		Record[] records = stck.getStack(); // FETCHES STACK ARRAY FOR SEARCHING
 
 		int r = stck.getSize() - 1;
@@ -251,10 +242,9 @@ class Queue {
 		}
 
 		if (p == 1) {
-			// System.out.println("Record found");
 			rex.print();
 		} else {
-			System.out.println(name + " not found");
+			JOptionPane.showMessageDialog(null, name + " not found", "Output", 3);
 		}
 	}
 
@@ -269,12 +259,6 @@ class Queue {
 		for (int e = 1; max / e > 0; e *= 10) {
 			sort(records, 0, len - 1);
 		}
-
-		// for (int i = 0; i <= len - 1; i++) {
-		// records[i].print();
-		// }
-
-		// System.out.println("Records Sorted");
 	}
 
 	void merge(Record arr[], int l, int m, int r) {
@@ -352,7 +336,115 @@ class Queue {
 
 }
 
-public class dsa {
+class Tree {
+	Tree child[] = new Tree[100];
+	int x = -1;
+	String s;
+	int p;
+
+	Tree(String str) {
+		s = Case.toTitleCase(str);
+	}
+
+	static Tree Search(Tree t, String str) {
+		if (str.equalsIgnoreCase(t.s))
+			return t;
+		int c = 0;
+		while (t.child[c] != null) {
+			Tree x = Search(t.child[c], str);
+			if (x != null)
+				return x;
+			c++;
+		}
+		return null;
+	}
+
+	static String traverse(Tree t, String str, Tree root, String out) {
+		if (t != root) {
+			if (t.p == 10)
+				out = out + "\n" + str + "├──" + t.s;
+			else
+				out = out + "\n" + str + "└──" + t.s;
+			if ((t.p == 10)) {
+				str = str + ("│  ");
+			} else {
+				str = str + ("   ");
+			}
+		} else {
+			out = t.s;
+		}
+		int c = 0;
+		while (t.child[c] != null) {
+			out = traverse(t.child[c], str, root, out);
+			c++;
+		}
+		return out;
+	}
+
+	static void join(Tree m, String t) {
+		if (m.x > -1) {
+			m.child[m.x].p = 10;
+		}
+		m.x++;
+		m.child[m.x] = new Tree(t);
+		if (m.x == 0)
+			m.child[m.x].p = 0;
+		else
+			m.child[m.x].p = 1;
+	}
+
+	public static void main() throws FileNotFoundException {
+		String in = "data.csv";
+		Scanner sc = new Scanner(new File(in));
+		Tree Root = new Tree("Football");
+
+		while (sc.hasNext()) {
+			String line = sc.nextLine();
+			int i2 = line.lastIndexOf(',');
+			String r = Case.toTitleCase(
+					line.substring(0, i2));
+			String t = Case.toTitleCase(
+					line.substring(i2 + 1));
+			if (Search(Root, t) == null) {
+				join(Root, t);
+			}
+			Tree m = Search(Root, t);
+			int i1 = r.lastIndexOf(',');
+			String u = r.substring(0, i1);
+			String v = r.substring(i1 + 1);
+			if (Search(Root, v) == null) {
+				join(m, v);
+			}
+			int i = u.indexOf(',');
+			u = u.substring(0, i);
+			Tree z = m.child[m.x];
+			join(z, u);
+		}
+		String output = traverse(Root, "", Root, "");
+		System.out.println(output);
+		System.out.println();
+		System.out.println();
+		System.out.println();
+
+		String r = JOptionPane.showInputDialog(null, "Enter Role/Position to be searched", "Tree Search", 3).trim();
+		if (Search(Root, r) == null)
+			JOptionPane.showMessageDialog(null, "Not Found!", "Error", 3);
+		else {
+			Tree tr = Search(Root, r);
+			if (tr.child[0] == null)
+				System.out.println(r + " is a name! Invalid Option");
+			else if (tr == Root)
+				System.out.println(r + " is the root! Invalid Option");
+			else {
+				output = traverse(tr, "", tr, "");
+				System.out.println(output);
+			}
+		}
+
+	}
+}
+
+public class dsa extends Frame implements ActionListener, WindowListener {
 	static Scanner s = new Scanner(System.in);
 	static File f = new File("data.csv");
 	static Scanner sc;
@@ -368,50 +460,80 @@ public class dsa {
 		while (sc.hasNextLine()) {
 
 			String line = sc.nextLine();
+
 			Record recn = new Record(line);
 			q.enqueue(recn); // INSERTS RECORDS INTO STACK S1
 		}
-
-		// System.out.println("Values Read from File!");
 		sc.close();
 	}
 
 	public static void menu() {
-		System.out.print("\n" +
-				"Menu" + "\n" +
-				"1: Search for Person" + "\n" +
-				"\n" +
-				"Choice:"); // MENU
-		int c = s.nextInt();
+		String response1 = JOptionPane.showInputDialog(null, "Name to be searched (Case-Insensitive)", "Binary Search", 3);
+		String name = response1;
+		q.binSearch(name);
+		menu();
 
-		clearScreen();
-
-		switch (c) {
-			case 1: {
-				System.out.println("Binary Search\n");
-				System.out.print("Name to be searched (case-insensitive): ");
-
-				String name = s.next();
-
-				q.binSearch(name);
-				menu();
-				break;
-			}
-
-			default: {
-				break;
-			}
-
-		}
-		;
 	}
 
 	public static void main(String[] args) {
 		try {
-			input();
-			menu();
+			String in = JOptionPane.showInputDialog(null, "Enter 1 to Search, 2 to see the Tree", "Choose", 3);
+			char c = in.charAt(0);
+			switch (c) {
+				case '1': {
+					input();
+					menu();
+					break;
+				}
+				case '2': {
+					Tree.main();
+					break;
+				}
+
+				default: {
+					break;
+				}
+
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/* ActionEvent handler */
+	@Override
+	public void actionPerformed(ActionEvent evt) {
+	}
+
+	/* WindowEvent handlers */
+	// Called back upon clicking close-window button
+	@Override
+	public void windowClosing(WindowEvent evt) {
+		System.exit(0);
+	}
+
+	@Override
+	public void windowOpened(WindowEvent evt) {
+	}
+
+	@Override
+	public void windowClosed(WindowEvent evt) {
+	}
+
+	@Override
+	public void windowIconified(WindowEvent evt) {
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent evt) {
+	}
+
+	@Override
+	public void windowActivated(WindowEvent evt) {
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent evt) {
 	}
 }
