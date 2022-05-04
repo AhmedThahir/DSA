@@ -1,5 +1,7 @@
 ---
-author: 
+title: none
+author: none
+footer: ${pageNo} / ${pageCount}
 ---
 
 # Details
@@ -78,7 +80,7 @@ The worst-case scenario is measured using order of complexity. The most common n
 
 Some common orders of complexity are
 $$
-O(1) < O(n \log n) < O(n) < O(n^2 \log n) < O(n^2) < \dots < O(2^n), O(e^n)
+O(1) < O(\log n) < O(n) < O(n \log n) < O(n^2 \log n) < O(n^2) < \dots < O(2^n), O(e^n)
 $$
 
 ## Data Structure
@@ -1067,13 +1069,13 @@ shiven,44,defender,player
 
 ## Output
 
-![image-20220430114421767](assets/image-20220430114421767-16513046639701.png)
+![image-20220430114421767](assets/start_screen.png)
 
 ### Search
 
-![image-20220430120042678](assets/image-20220430120042678-16513056443042.png)
+![image-20220430120042678](assets/binary_search.png)
 
-![image-20220430120144548](assets/image-20220430120144548-16513057062843.png)
+![image-20220430120144548](assets/binary_search_output.png)
 
 ### Tree
 
@@ -1122,7 +1124,7 @@ Football
       └──Shiven
 ```
 
-![image-20220430115911396](assets/image-20220430115911396-16513055529921.png)
+![image-20220430115911396](assets/tree_output.png)
 
 ```
 Midfielder
