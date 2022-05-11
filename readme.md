@@ -107,7 +107,7 @@ Stack is a linear data structure in which the operations are performed in LIFO(L
 
 ### Queue
 
-Stack is a linear data structure in which the operations are performed in LIFO(Last In First Out) order. The elements are visualized to be stored as ‘after’ each other. They are used in task scheduling, queuing operations, etc.
+Queue is a linear data structure in which the operations are performed in FIFO(First In First Out) order. The elements are visualized to be stored as ‘after’ each other. They are used in task scheduling, queuing operations, etc.
 
 ![](assets/queue.svg)
 
